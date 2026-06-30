@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>少羽</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #080b0e;
+            color: #f1f5f9;
+            line-height: 1.7;
+            overflow: hidden; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, p, span, input, button, div.modal-text, .flow-link-container a {
+            transition: text-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        p:hover, span:not(.highlight):hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.5), 
+                         0 0 20px rgba(0, 255, 170, 0.2);
+        }
+
+        .highlight:hover {
+            text-shadow: 0 0 12px rgba(0, 255, 170, 0.8), 
+                         0 0 30px rgba(0, 255, 170, 0.4);
+        }
+
+        header h1:hover {
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.7), 
+                         0 0 40px rgba(0, 255, 170, 0.5);
+        }
+
+        .section-title:hover {
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.7), 
+                         0 0 30px rgba(0, 210, 255, 0.3);
+        }
+
+        .modal-text:hover {
+            text-shadow: 0 0 18px rgba(0, 255, 170, 0.8);
+        }
+
+        header {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+
+        .header-bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            will-change: transform, opacity;
+        }
+
+        .bg-slide-1 {
+            background-image: linear-gradient(rgba(8, 11, 14, 0.85), rgba(8, 11, 14, 0.98)), 
+                              url('https://ts1.tc.mm.bing.net/th/id/OIP-C.cG4z0Oa8p3_-oBllBTBqowHaJ4?w=193&h=257&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2');
+            animation: slideLoop1 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bg-slide-2 {
+            background-image: linear-gradient(rgba(8, 11, 14, 0.85), rgba(8, 11, 14, 0.98)), 
+                              url('https://ts1.tc.mm.bing.net/th/id/OIP-C.Mbze3nxj4uYBbs2l8szocAAAAA?w=193&h=193&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2');
+            animation: slideLoop2 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideLoop1 {
+            0%, 45% { opacity: 1; transform: scale(1.02) translate(0, 0); }
+            50%, 95% { opacity: 0; transform: scale(1.08) translate(10px, -5px); }
+            100% { opacity: 1; transform: scale(1.02) translate(0, 0); }
+        }
+
+        @keyframes slideLoop2 {
+            0%, 45% { opacity: 0; transform: scale(1.08) translate(-10px, 5px); }
+            50%, 95% { opacity: 1; transform: scale(1.02) translate(0, 0); }
+            100% { opacity: 0; transform: scale(1.08) translate(-10px, 5px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 5;
+            max-width: 850px;
+        }
+
+        header h1 {
+            font-size: 4.8rem;
+            background: linear-gradient(135deg, #00d2ff, #00ffaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-weight: 900;
+            filter: drop-shadow(0px 8px 25px rgba(0, 210, 255, 0.35));
+            cursor: default;
+        }
+
+        header p {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+            cursor: default;
+        }
+
+        #password-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #passphrase {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            outline: none;
+            width: 340px;
+            text-align: center;
+            letter-spacing: 2px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 15px rgba(236, 72, 153, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #passphrase:focus {
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4), inset 0 2px 4px rgba(0,0,0,0.3);
+            border-color: #00d2ff;
+        }
+
+        @keyframes textShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .input-error {
+            animation: textShake 0.4s ease-in-out;
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        #submit-btn {
+            background: linear-gradient(135deg, #00d2ff, #00ffaa);
+            border: none;
+            color: #080b0e;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 255, 170, 0.25);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        #submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 170, 0.5);
+        }
+
+        #error-msg {
+            color: #ef4444;
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: none;
+            text-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+            animation: fadeInShort 0.3s ease-out;
+        }
+
+        .scroll-down {
+            margin-top: 60px;
+            font-size: 1.2rem;
+            color: #00ffaa;
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: bounce 2s infinite;
+            display: none; 
+            cursor: default;
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.4);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 6, 9, 0.25);
+            backdrop-filter: blur(80px) saturate(300%); 
+            -webkit-backdrop-filter: blur(80px) saturate(300%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #custom-modal, #force-ad-modal {
+            background: rgba(255, 255, 255, 0.01); 
+            border: 1px solid rgba(255, 255, 255, 0.22); 
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 24px;
+            padding: 45px 40px; 
+            position: relative;
+            max-width: 620px;
+            width: 90%;
+            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.85), 
+                        inset 0 1px 4px rgba(255, 255, 255, 0.35),
+                        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+                        0 0 40px rgba(0, 210, 255, 0.05);
+            text-align: center;
+            transform: scale(0.92);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #modal-overlay.active #custom-modal {
+            transform: scale(1);
+        }
+
+        .modal-text {
+            font-size: 1.9rem;
+            color: #00ffaa; 
+            font-weight: bold;
+            line-height: 2.0;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 15px rgba(0, 255, 170, 0.3);
+            cursor: default;
+            margin-bottom: 35px;
+        }
+
+        .modal-btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn-army-green {
+            background: #10b981; 
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .btn-army-green:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(5, 150, 105, 0.4);
+        }
+
+        .btn-revive-red {
+            background: linear-gradient(90deg, #ef4444, #dc2626, #ef4444);
+            background-size: 200% auto;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .btn-revive-red:hover {
+            background: linear-gradient(90deg, #a855f7, #00ffaa, #00d2ff, #a855f7);
+            background-size: 200% auto;
+            animation: flowingGlow 2s linear infinite;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 255, 170, 0.4), 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+
+        @keyframes flowingGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        #modal-ad-box, .force-ad-container {
+            opacity: 0.15;
+            transition: opacity 0.3s ease;
+        }
+        #modal-ad-box:hover, .force-ad-container:hover {
+            opacity: 1;
+        }
+
+        .flow-link-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        .flow-link-container a {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem; 
+            max-width: 320px;  
+            width: 100%;
+            font-weight: bold;
+            color: #cbd5e1;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: block;
+            text-align: center;
+            animation: slowNeonBreathe 8s infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        .flow-link-container a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        @keyframes slowNeonBreathe {
+            0%, 100% {
+                border-color: rgba(0, 210, 255, 0.3);
+                box-shadow: 0 0 12px rgba(0, 210, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+                color: #cbd5e1;
+            }
+            33% {
+                border-color: rgba(236, 72, 153, 0.3);
+                box-shadow: 0 0 16px rgba(236, 72, 153, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+                color: #f1f5f9;
+            }
+            66% {
+                border-color: rgba(0, 255, 170, 0.3);
+                box-shadow: 0 0 12px rgba(0, 255, 170, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+                color: #cbd5e1;
+            }
+        }
+
+        #pay-qr-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-20px);
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 1px dashed rgba(255, 255, 255, 0.0);
+            will-change: max-height, opacity, transform;
+            transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        margin 0.4s ease, padding 0.4s ease;
+        }
+        
+        #pay-qr-container.active {
+            max-height: 480px; 
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed rgba(236, 72, 153, 0.25);
+        }
+
+        .support-switcher-wrapper {
+            position: relative;
+            display: inline-block;
+            padding: 2px; 
+            border-radius: 50px;
+            background: linear-gradient(90deg, #ff3366, #00d2ff, #00ffaa, #ff3366);
+            background-size: 300% auto;
+            animation: flowingGlow 4s linear infinite;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.15);
+        }
+
+        .support-switcher {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(15px) saturate(160%);
+            -webkit-backdrop-filter: blur(15px) saturate(160%);
+            border-radius: 50px;
+            display: flex;
+            position: relative;
+            width: 280px;
+            height: 42px;
+            user-select: none;
+        }
+
+        .switcher-btn {
+            flex: 1;
+            text-align: center;
+            line-height: 42px;
+            z-index: 2;
+            cursor: pointer;
+            font-weight: bold;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .switcher-btn.active {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(0, 255, 170, 0.4);
+        }
+
+        .switcher-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: calc(50% - 3px);
+            height: calc(100% - 6px);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 50px;
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .switcher-slider.slide-right {
+            transform: translateX(100%);
+        }
+
+        .tab-panel {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            will-change: opacity, transform;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-panel.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #qr-support-content img {
+            max-width: 160px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .ad-gradient-heading {
+            background: linear-gradient(90deg, #ff7a00, #00d2ff, #a855f7, #ff7a00);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: flowingGlow 3s linear infinite;
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        #force-ad-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 8, 11, 0.3);
+            backdrop-filter: blur(65px) saturate(260%);
+            -webkit-backdrop-filter: blur(65px) saturate(260%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; 
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #force-ad-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .force-ad-notice {
+            font-size: 1.5rem;
+            color: #00ffaa;
+            font-weight: bold;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 255, 170, 0.2);
+        }
+        
+        .btn-ad-style {
+            width: 100%;
+            margin-top: 20px;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.05rem;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        #btn-force-close {
+            background: linear-gradient(135deg, #00d2ff, #00ffaa);
+            color: #080b0e;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 170, 0.3);
+        }
+        #btn-force-close.ready:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 170, 0.5);
+        }
+        
+        #btn-force-ad-slot {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(0, 255, 170, 0.3);
+            color: #00ffaa;
+            cursor: pointer;
+        }
+        #btn-force-ad-slot:hover {
+            background: rgba(0, 255, 170, 0.1);
+            color: #ffffff;
+            border-color: #00ffaa;
+        }
+
+        #danmaku-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 90; 
+            overflow: hidden;
+            display: none;
+        }
+
+        .danmaku-item {
+            position: absolute;
+            white-space: nowrap;
+            left: 100%;
+            font-weight: 900;
+            letter-spacing: 2px;
+            will-change: transform;
+            animation: danmakuWalk linear forwards;
+            opacity: 0.5; 
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+            cursor: default;
+        }
+
+        @keyframes danmakuWalk {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-160vw); }
+        }
+
+        .dm-grad-1 {
+            background: linear-gradient(90deg, #00d2ff, #00ffaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dm-grad-2 {
+            background: linear-gradient(90deg, #ff3366, #ffae00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dm-grad-3 {
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            color: #00d2ff;
+            margin-bottom: 45px;
+            border-bottom: 2px solid rgba(30, 41, 59, 0.5);
+            padding-bottom: 18px;
+            text-align: center;
+            letter-spacing: 2px;
+            cursor: default;
+        }
+
+        .content-card {
+            background: rgba(15, 23, 42, 0.4); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            margin-bottom: 50px;
+            border: 1px solid rgba(0, 210, 255, 0.15); 
+            border-left: 6px solid #00ffaa; 
+        }
+
+        .content-card p {
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            margin-bottom: 24px;
+            text-align: justify;
+            text-indent: 2em;
+            cursor: default;
+        }
+
+        .content-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight {
+            color: #00ffaa;
+            font-weight: bold;
+            font-size: 1.25rem;
+            cursor: default;
+            padding: 0 2px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 45px;
+            background: #050709;
+            color: #475569;
+            border-top: 1px solid rgba(30, 41, 59, 0.5);
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px) scale(0.99);
+            will-change: transform, opacity;
+            transition: opacity 0.8s cubic-bezier(0.215, 0.61, 0.355, 1), 
+                        transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-bg-container">
+            <div class="bg-slide bg-slide-1"></div>
+            <div class="bg-slide bg-slide-2"></div>
+        </div>
+
+        <div class="header-content">
+            <h1 class="fade-in">少羽牛逼</h1>
+            <p class="fade-in">反应如电，身法如风。见证和平精英顶尖技术流主播——少羽。</p>
+            
+            <div id="password-container" class="fade-in">
+                <input type="text" id="passphrase" placeholder="输入口令开启介紹...">
+                <button id="submit-btn">验证口令</button>
+            </div>
+            <p id="error-msg">❌口令错误，请重新输入！</p>
+
+            <div class="scroll-down">↓向下滑动探索少羽的故事↓</div>
+        </div>
+    </header>
+
+    <div id="modal-overlay">
+        <div id="custom-modal">
+            <div class="modal-text">“十年榜首无人知，<br>清者自清万人识”</div>
+            <div class="modal-btn-group">
+                <button id="btn-army-green" class="btn-army-green">我是羽家军</button>
+                <button id="btn-revive-red" class="btn-revive-red">我要振兴羽家军</button>
+            </div>
+
+            <div id="modal-ad-box">
+                <div class="ad-gradient-heading">反馈建议与交流合作tg@uid4567</div>
+                <div class="flow-link-container">
+                    <a href="https://vgvg.vg#/register?code=x4RJO0XH" target="_blank">12y一年机场</a>
+                    <a href="https://xn--9kqz23b19z.com/#/register?code=W69KHxvU" target="_blank">2y超高速大流量机场</a>
+                    <a href="https://vpn07.com/index.html#/register?code=bTBoHBJB" target="_blank">纯净家庭宽带</a>
+                </div>
+            </div>
+
+            <div id="pay-qr-container">
+                <div class="support-switcher-wrapper">
+                    <div class="support-switcher">
+                        <div class="switcher-slider" id="switcher-slider"></div>
+                        <div class="switcher-btn active" id="btn-tab-qr">二维码支持</div>
+                        <div class="switcher-btn" id="btn-tab-link">链接支持</div>
+                    </div>
+                </div>
+
+                <div id="qr-support-content" class="tab-panel active">
+                    <img src="synbpay.png" alt="synbpay.png圖片">
+                    <div class="flow-link-container" style="margin-top: 15px;">
+                        <a href="https://synb666zanding.com" target="_blank">点击这里为网站更新词条与优化做出贡献</a>
+                    </div>
+                </div>
+
+                <div id="link-support-content" class="tab-panel">
+                    <div class="flow-link-container">
+                        <a href="https://synb666zanding.com" target="_blank" style="max-width: 100%; width: 100%; font-size: 1.05rem; padding: 12px; border-radius: 12px;">点此支持网页，为更新词条与优化加速</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="force-ad-overlay">
+        <div id="force-ad-modal">
+            <div class="force-ad-container">
+                <div class="force-ad-notice">机场分享，点击即用</div>
+                <div class="flow-link-container">
+                    <a href="https://vgvg.vg#/register?code=x4RJO0XH" target="_blank">12y一年机场</a>
+                    <a href="https://xn--9kqz23b19z.com/#/register?code=W69KHxvU" target="_blank">2y超高速大流量机场</a>
+                    <a href="https://vpn07.com/index.html#/register?code=bTBoHBJB" target="_blank">纯净家庭宽带</a>
+                </div>
+            </div>
+            <button id="btn-force-close" class="btn-ad-style">我已知晓，不需要代理</button>
+            <button id="btn-force-ad-slot" class="btn-ad-style">反馈建议与交流合作 tg@uid4567</button>
+        </div>
+    </div>
+
+    <section>
+        <h2 class="section-title fade-in">一代战神 光辉事迹</h2>
+        <div class="content-card fade-in">
+            <p>在《和平精英》风云激荡的主播生态中，<span class="highlight">少羽</span>是一个无法被忽略的图腾。他不仅是一位拥有数百万追随者的顶尖主播，更是整个游戏社区公认的近战对抗天花板级人物。在战局瞬息万变的无敌战神局里，他常常以一人一骑直冲千军万马，用近乎残暴的正面钢枪打法和极具观赏性的艺术级身法，硬生生在高端局中步出了一条属于自己的传奇之路。</p>
+            <p>少羽的成名绝非偶然，他的荣誉墙由数万个在刀尖上跳舞的高光镜头筑成。作为公认的顶级技术流导师，他创造了无数次单人四排面对满编特种部队时极限“1穿4”、在全队阵亡的绝境下丝血反杀等名场面。他出色的反应速度、完美的局势剖析能力以及对待粉丝坦诚热情的态度，使其赢得了广大电竞爱好者极高的赞誉与尊重，在《和平精英》的历史长河中留下了难以磨灭的印记。</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title fade-in">少羽与UZI跳枪</h2>
+        <div class="content-card fade-in">
+            <p>在和平精英的兵器谱上，Micro UZI冲锋枪虽射速冠绝全军，但因单发威力较小、极度依赖贴脸爆发，往往被普通玩家视为过渡武器。然而，一旦这把武器到了少羽手中，它就会演化为神挡杀神、佛挡杀佛的恐怖杀器。少羽这个名字，已经与<span class="highlight">“UZI跳枪”</span>这项划时代的身法绝技形成了牢不可破的致命羁绊。</p>
+            <p>所谓的“UZI跳枪”，是少羽在历经无数次生死对决后精雕细琢而成的王牌招式。在与敌人近距离遭遇的电光石火之间，少羽能够完美利用身法起跳。这一跃不仅利用空中变向完全摧毁了敌方的爆头预瞄线，还能在准心剧烈晃动的滞空状态下，将UZI的射速发挥到极致，达成完美的腰射精准锁头。这种将极其严苛的物理引擎预判、屏幕跟枪手感以及对局心理学融合为一体的身法打法，帮助他多次在满编队包夹的绝对死局里完成绝地翻盘。少羽的枪火和纵身飞跃，彻底拓宽了玩家对贴身近战操作上限的认知。</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title fade-in">血洗雨林——杀穿自闭城的传说</h2>
+        <div class="content-card fade-in">
+            <p>萨诺雨林地图的“训练基地”（Bootcamp），因其物资刷新极度密集、落地即是惨烈绞杀而被称为<span class="highlight">“自闭城”</span>。对于百分之九十的特种兵而言，这里是落地成盒、令人大受打击的噩梦终结之地；但对于少羽来说，自闭城是他检验至高技术、书写不败神话的私家狩猎场。单人四排跳伞自闭城主楼，正是他最广为流传的史诗级事迹。</p>
+            <p>在数条满编队伍同时下饺子般坠入训练基地的极端环境下，少羽总能凭借分秒不差的精准控伞率先落地。拿到武器的那一刻起，他的恐怖屠杀秀便拉开了帷幕。他依赖登峰造极的听声辩位能力，在错综复杂的Y字楼、主楼天井以及危机四伏的三仓之间如鬼魅般穿梭。利用翻窗拉扯、楼梯反向卡点、极限滑铲接标志性跳枪，少羽能把四面八方的敌人玩弄于股掌之间。在漫天枪火与盒子散发的绿色烟雾中，他以一己之力终结整座城市的喧嚣，斩获20+甚至30+的击杀。这份独自走出雨林修罗场的绝对统治力，至今仍被整个和平精英社区奉为无法复刻的近战钢枪教科书。</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>赞赏网页，每达到30元目标后，网站将迎来史诗级别的优化与更新 若詞條不準確或需要交流合作，請聯係作者</p>
+        <p>copyright@id6767 最終解釋權歸本網站所有</p>
+    </footer>
+
+    <div id="danmaku-container"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const submitBtn = document.getElementById('submit-btn');
+            const passphraseInput = document.getElementById('passphrase');
+            const errorMsg = document.getElementById('error-msg');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const scrollDownHint = document.querySelector('.scroll-down');
+            const passwordContainer = document.getElementById('password-container');
+            
+            const btnArmyGreen = document.getElementById('btn-army-green');
+            const btnReviveRed = document.getElementById('btn-revive-red');
+            const payQrContainer = document.getElementById('pay-qr-container');
+            const danmakuContainer = document.getElementById('danmaku-container');
+
+            const forceAdOverlay = document.getElementById('force-ad-overlay');
+            const btnForceClose = document.getElementById('btn-force-close');
+
+            const btnTabQr = document.getElementById('btn-tab-qr');
+            const btnTabLink = document.getElementById('btn-tab-link');
+            const switcherSlider = document.getElementById('switcher-slider');
+            const qrSupportContent = document.getElementById('qr-support-content');
+            const linkSupportContent = document.getElementById('link-support-content');
+
+            const danmakuTexts = [
+                "少羽牛逼", 
+                "SYNB666", 
+                "少羽是信仰", 
+                "你若动少羽一根羽毛，我必毁你整个天堂"
+            ];
+            
+            const danmakuStyles = [
+                { type: 'color', val: '#ff3366' },
+                { type: 'color', val: '#00ffaa' },
+                { type: 'color', val: '#00d2ff' },
+                { type: 'color', val: '#ffae00' },
+                { type: 'color', val: '#ffffff' },
+                { type: 'color', val: '#e0aaff' },
+                { type: 'class', val: 'dm-grad-1' },
+                { type: 'class', val: 'dm-grad-2' },
+                { type: 'class', val: 'dm-grad-3' }
+            ];
+
+            function verifyCode() {
+                const inputVal = passphraseInput.value.trim();
+                if (inputVal === 'SYNB666' || inputVal === '少羽牛逼') {
+                    errorMsg.style.display = 'none';
+                    passphraseInput.classList.remove('input-error');
+                    modalOverlay.classList.add('active'); 
+                } else {
+                    errorMsg.style.display = 'block';
+                    passphraseInput.classList.remove('input-error');
+                    void passphraseInput.offsetWidth; 
+                    passphraseInput.classList.add('input-error');
+                }
+            }
+
+            submitBtn.addEventListener('click', verifyCode);
+            passphraseInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') verifyCode();
+            });
+
+            btnArmyGreen.addEventListener('click', function() {
+                modalOverlay.classList.remove('active'); 
+                forceAdOverlay.classList.add('active');  
+                btnForceClose.innerText = "我已知晓，不需要代理服务";
+            });
+
+            btnForceClose.addEventListener('click', function() {
+                forceAdOverlay.classList.remove('active'); 
+                document.body.style.overflow = 'auto';   
+                
+                passwordContainer.style.display = 'none'; 
+                scrollDownHint.style.display = 'block';   
+                
+                window.dispatchEvent(new Event('scroll'));
+            });
+
+            btnReviveRed.addEventListener('click', function() {
+                payQrContainer.classList.toggle('active');
+            });
+
+            btnTabQr.addEventListener('click', function() {
+                if(btnTabQr.classList.contains('active')) return;
+                
+                btnTabQr.classList.add('active');
+                btnTabLink.classList.remove('active');
+                switcherSlider.classList.remove('slide-right'); 
+                
+                linkSupportContent.classList.remove('active');
+                setTimeout(() => {
+                    linkSupportContent.style.display = 'none';
+                    qrSupportContent.style.display = 'block';
+                    setTimeout(() => qrSupportContent.classList.add('active'), 20);
+                }, 200);
+            });
+
+            btnTabLink.addEventListener('click', function() {
+                if(btnTabLink.classList.contains('active')) return;
+                
+                btnTabLink.classList.add('active');
+                btnTabQr.classList.remove('active');
+                switcherSlider.classList.add('slide-right'); 
+                
+                qrSupportContent.classList.remove('active');
+                setTimeout(() => {
+                    qrSupportContent.style.display = 'none';
+                    linkSupportContent.style.display = 'block';
+                    setTimeout(() => linkSupportContent.classList.add('active'), 20);
+                }, 200);
+            });
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 200 && document.body.style.overflow === 'auto') {
+                    danmakuContainer.style.display = 'block';
+                } else {
+                    danmakuContainer.style.display = 'none';
+                }
+            });
+
+            function launchDanmaku() {
+                if (document.body.style.overflow !== 'auto') return;
+
+                const item = document.createElement('div');
+                item.className = 'danmaku-item';
+                item.innerText = danmakuTexts[Math.floor(Math.random() * danmakuTexts.length)];
+                
+                const styleConfig = danmakuStyles[Math.floor(Math.random() * danmakuStyles.length)];
+                if (styleConfig.type === 'color') {
+                    item.style.color = styleConfig.val;
+                } else {
+                    item.classList.add(styleConfig.val);
+                }
+
+                const topPos = Math.random() * 75 + 10;
+                item.style.top = `${topPos}%`;
+
+                const fontSize = (Math.random() * 0.6 + 1.2).toFixed(2);
+                item.style.fontSize = `${fontSize}rem`;
+
+                const duration = Math.random() * 4 + 6; 
+                item.style.animationDuration = `${duration}s`;
+
+                danmakuContainer.appendChild(item);
+
+                setTimeout(() => {
+                    item.remove();
+                }, duration * 1000);
+            }
+
+            setInterval(launchDanmaku, 180);
+
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.05,
+                rootMargin: "0px 0px -30px 0px"
+            };
+
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+    </script>
+</body>
+</html>
